@@ -28,13 +28,26 @@ input {
 /* User 2 Specific Code */
 socket = new WebSocket("ws://" + window.location.host + "/user2/");
 socket.onmessage = function(e) {
-    alert(e.data);
+    value = e.data;
+    box = document.getElementById('box'+e.data[0]);
+    box.disabled = true;
+    box.value = e.data[1];
+    //alert(e.data);
 }
 function update(val) {
-    value = document.getElementById('box'+val).value;
+    box = document.getElementById('box'+val);
+    value = box.value;
     socket.onopen = function() {
-        if(value)
-            socket.send(val+value);
+        if(value != 'X')
+        {
+            box.value = '';
+            alert('Enter X in one of the boxes');
+        }
+        else if(value)
+        {
+            socket.send(val+value); //send box number + box value. Eg. 13 means box 1 has number 3
+            box.disabled = true;
+        }
     }
     // Call onopen directly if socket is already open
     if (socket.readyState == WebSocket.OPEN) socket.onopen();
