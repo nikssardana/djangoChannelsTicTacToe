@@ -33,7 +33,6 @@ disabled = [ false, false, false, false, false, false, false, false, false, fals
 /* Enable All Empty Boxes (Current User's Turn) */
 function enableAll()
 {
-    console.log(disabled);
     for(i=1;i<=9;i++)
     {
             box = document.getElementById('box'+ i.toString());
@@ -60,24 +59,25 @@ socket.onmessage = function(e) {
     box.value = e.data[1];
     box.disabled = true;
     enableAll();
+    checkWin();
     //alert(e.data);
 }
 function update(val) {
     box = document.getElementById('box'+val);
-    disabled[val] = true;
-    box.disabled = true;
     value = box.value;
     socket.onopen = function() {
-        if(value != 'X')
+        if(value == 'X')
+        {
+            socket.send(val+value); //send box number + box value. Eg. 13 means box 1 has number 3
+            disabled[val] = true;
+            disableAll();
+            box.disabled = true;
+            checkWin();
+        }
+        else
         {
             box.value = '';
             alert('Enter X in one of the boxes');
-        }
-        else if(value)
-        {
-            socket.send(val+value); //send box number + box value. Eg. 13 means box 1 has number 3
-            disabled[ value ] = true;
-            disableAll();
         }
     }
     // Call onopen directly if socket is already open
@@ -91,5 +91,82 @@ function update(val) {
     }
 })
 disableAll(); //User 1's turn first
+
+function checkWin() {
+    boxes = [ '', ];
+    values = [ 0, ];
+    won = false;
+    for(var i = 1; i<= 9; i++)
+    {
+        boxes.push( document.getElementById('box'+ i.toString()) );
+        values.push(boxes[i].value);
+    }
+    if( values[1] == values[2] && values[2] ==  values[3] && values[1] != '')
+    {
+        if(values[1] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if( values[4] == values[5] && values[5] ==  values[6] && values[4] != '')
+    {
+        if(values[4] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if( values[7] == values[8] && values[8] ==  values[9] && values[7] != '')
+    {
+        if(values[7] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if( values[1] == values[4] && values[4] ==  values[7] && values[1] != '')
+    {
+        if(values[1] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if( values[2] == values[5] && values[5] ==  values[8] && values[2] != '')
+    {
+        if(values[2] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if( values[3] == values[6] && values[6] ==  values[9] && values[3] != '')
+    {
+        if(values[3] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if( values[1] == values[5] && values[5] ==  values[9] && values[1] != '')
+    {
+        if(values[1] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if( values[3] == values[5] && values[5] ==  values[7] && values[3] != '')
+    {
+        if(values[3] == 'O')
+            alert('User 1 won!');
+        else
+            alert('User 2 won!');
+        won = true;
+    }
+    if(won)
+        disableAll(); /* Game over! */
+}
 </script>
 </html>
