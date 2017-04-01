@@ -1,0 +1,50 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tic Tac Toe</title>
+</head>
+<body>
+    <h2>Tic Tac Toe Board for User 2</h2>
+    <input type="text" name="box1" id="box1" value="" onkeyup='update("1")'>
+    <input type="text" name="box2" id="box2" value="" onkeyup='update("2")'>
+    <input type="text" name="box3" id="box3" value="" onkeyup='update("3")'>
+    <br/>
+    <input type="text" name="box4" id="box4" value="" onkeyup='update("4")'>
+    <input type="text" name="box5" id="box5" value="" onkeyup='update("5")'>
+    <input type="text" name="box6" id="box6" value="" onkeyup='update("6")'>
+    <br/>
+    <input type="text" name="box7" id="box7" value="" onkeyup='update("7")'>
+    <input type="text" name="box8" id="box8" value="" onkeyup='update("8")'>
+    <input type="text" name="box9" id="box9" value="" onkeyup='update("9")'>
+    <br/>
+</body>
+<style type="text/css" media="screen">
+input {
+    height: 50px;
+    width: 50px;
+}
+</style>
+<script type="text/javascript" charset="utf-8">
+/* User 2 Specific Code */
+socket = new WebSocket("ws://" + window.location.host + "/user2/");
+socket.onmessage = function(e) {
+    alert(e.data);
+}
+function update(val) {
+    value = document.getElementById('box'+val).value;
+    socket.onopen = function() {
+        if(value)
+            socket.send(val+value);
+    }
+    // Call onopen directly if socket is already open
+    if (socket.readyState == WebSocket.OPEN) socket.onopen();
+}
+
+/* Establish Connection when the page loads */
+(function() {
+    socket.onopen = function() {
+        socket.send('establish connection');
+    }
+})
+</script>
+</html>
